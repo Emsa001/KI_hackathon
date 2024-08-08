@@ -2,10 +2,10 @@ const getLocation = (city: string) => {
     switch (city) {
         case "Wolfsburg":
             return {
-                country: "Germany",
-                region: "Lower Saxony",
+                country: "Poland",
+                region: "Mazowsze",
                 coordinates: {
-                    lat: 52.4226,
+                    lat: 2.4226,
                     lon: 10.7865,
                 },
             };

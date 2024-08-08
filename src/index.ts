@@ -10,7 +10,7 @@ const prompt = ChatPromptTemplate.fromMessages([
     ["placeholder", "{agent_scratchpad}"],
 ]);
 
-const botty = new AI({
+const bot = new AI({
     apiKey: process.env.OPENAI_API_KEY,
     model: "gpt-4o-mini",
     temperature: 0.5,
@@ -22,15 +22,11 @@ const botty = new AI({
 const messages = [
     {
         user: "Emanuel",
-        message: "Where is Warsaw located? And what is the population?",
-    },
-    {
-        user: "Emanuel",
-        message: "How many people are in Berlin?",
+        message: "Where is Wolfsburg located? And what is the population?",
     },
 ]
 
 for (const message of messages) {
-    const response = await botty.message(message.user, message.message);
+    const response = await bot.message(message.user, message.message);
     console.log(response);
 }

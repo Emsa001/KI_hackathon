@@ -13,7 +13,7 @@ export default async function runMessage(user: string, input: string, ai: AI) {
         }
 
         const result = await ai.agent.invoke({
-            input,
+            input: `${user}: ${input}`,
         });
 
         return result;
