@@ -52,7 +52,7 @@ const bot = new BotAzureOpenAI({
 // console.log(response2);
 
 const app = express();
-const port = 3000;
+const port = 5555;
 
 app.use(cors()); // Use cors middleware
 
