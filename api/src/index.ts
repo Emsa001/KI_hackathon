@@ -7,6 +7,7 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { loadPDF } from "./utils/PdfReader";
 import express from "express";
 import cors from "cors"; // Import cors
+import getTransportData from "./tools/transport";
 
 const prompt = ChatPromptTemplate.fromMessages([
     ["system", "{system}"],
@@ -31,7 +32,7 @@ const bot = new BotAzureOpenAI({
     api_version: process.env.AZURE_OPENAI_API_VERSION,
     model: "gpt-4o",
     temperature: 0.5,
-    tools: [getCityData],
+    tools: [getCityData, getTransportData],
     prompt,
     debug: false,
 });
@@ -80,12 +81,12 @@ app.post("/message", async (req, res) => {
 
         const verifyInput = await verify.messageModel({
             input,
-            system: "verify if user input is regarding the city stuff, can contain stuff like (city noise, bikes, hosuing and etc), respond only with yes or no",
+            system: `You are a Braunschweig City Information Bot. Your task is to determine if the user's input pertains to Braunschweig or general city-related topics (such as transportation, weather, landmarks, events, or services). If the city is not mentioned, assume the input is about Braunschweig by default. Respond with 'Yes' if the input is relevant to Braunschweig or general city matters, and 'No' if it is not.`,
         });
 
         console.log(verifyInput);
         if(verifyInput.content.toLowerCase().includes("no"))
-            return res.status(200).json({ output: "I can provide information only about Braunschweig city" });
+            return res.status(200).json({ input, output: "I can provide information only about Braunschweig city" });
 
         const response = await bot.messageTools({
             input,

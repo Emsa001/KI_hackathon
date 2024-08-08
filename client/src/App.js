@@ -5,19 +5,19 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.js";
 import shp from "shpjs";
 
-import {
-    Button,
-    CodeMockup,
-    Input,
-    Textarea,
-    WindowMockup,
-} from "react-daisyui";
+import { Divider, Loading, WindowMockup } from "react-daisyui";
 import { AIRequst } from "./api";
+import { drawMarkers, removeAllMarkers } from "./components/Markers";
+import UserInput from "./components/UserInput";
 
 function App() {
     const mapRef = useRef(null);
-    const [input, setInput] = useState("");
-    const [aitext, setAiText] = useState(null);
+    const [aitext, setAiText] = useState({});
+    const [markers, setMarkers] = useState([
+        { lat: "52.2632", lon: "10.5307" },
+    ]);
+
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (mapRef.current) return; // If map is already initialized, do nothing
@@ -57,13 +57,46 @@ function App() {
         });
     }, []);
 
-    const handleClick = async () => {
+    const AiResponseElement = () => {
+        if (loading) return <Loading className="w-50 h-50 mx-auto" />;
+
+        if (!aitext?.output) {
+            return (
+                <div className="flex flex-col px-4 w-full pb-12 text-center">
+                    <h2 className="font-bold mb-2 text-2xl">
+                        Hey! I am{" "}
+                        <span className="bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text">
+                            BraunschweigAI!
+                        </span>
+                        <br />
+                        Ask me something about Braunschweig!
+                    </h2>
+                </div>
+            );
+        }
+
+        return (
+            <div className="flex flex-col px-4 w-full pb-12">
+                <p className="font-bold mb-2">
+                    <span className="text-gray-300">User: </span>
+                    {aitext?.input}
+                </p>
+                <Divider className="py-0 my-0" />
+                <p className="font-bold text-success">
+                    <span className="text-gray-300">BBOT: </span>
+                    {aitext?.output}
+                </p>
+            </div>
+        );
+    };
+
+    const handleSubmit = async (input) => {
         try {
+            setLoading(true);
             const request = await AIRequst(input);
             const { data } = request;
             setAiText(data);
 
-            // const map = "http://localhost:3000/noise.zip";
             if (data?.intermediateSteps && data?.intermediateSteps.length > 0) {
                 console.log(data?.intermediateSteps);
                 const map =
@@ -76,51 +109,26 @@ function App() {
                     });
                 }
             }
+            setLoading(false);
         } catch (error) {
             console.log(error);
+            setLoading(false);
         }
     };
 
-    const AiResponseElement = () => {
-        if (!aitext?.output) return null;
-
-        return (
-            <WindowMockup className="w-full h-full bg-gradient-to-br from-violet-600 from-indigo-900">
-                <div className="flex flex-col px-4 w-full">
-                    <h2 className="font-bold mb-2">{aitext?.input}</h2>
-                    <p className="text-success text-xl">{aitext?.output}</p>
-                </div>
-            </WindowMockup>
-        );
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        handleClick();
-    };
-
     return (
-        <div className="App" style={{ height: "100vh", width: "100vw" }}>
+        <div
+            className="bg-gradient-to-br from-stone-900 to-gray-900"
+            style={{ height: "100vh", width: "100vw" }}
+        >
             <div className="grid grid-cols-2 gap-4 h-screen w-screen">
-                <div className="flex flex-col gap-2 items-center justify-center">
+                <div className="flex flex-col gap-2 items-center justify-between h-screen py-12">
                     <div className="w-[90%] p-5 text-wrap">
-                        <AiResponseElement />
+                        <WindowMockup className="w-full h-full bg-gradient-to-br from-violet-800 to-fuchsia-900 min-h-[100px] max-h-[500px] overflow-y-auto shadow-2xl">
+                            <AiResponseElement />
+                        </WindowMockup>
                     </div>
-                    <form onSubmit={handleSubmit} className="w-[90%]">
-                        <Textarea
-                            className="border border-1 w-full h-32"
-                            maxLength={500}
-                            placeholder="Your input"
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter" && !e.shiftKey) {
-                                    e.preventDefault();
-                                    handleSubmit(e);
-                                }
-                            }}
-                        />
-                        <Button type="submit">Submit</Button>
-                    </form>
+                    <UserInput handleSubmit={handleSubmit} />
                 </div>
                 <div id="map" className="col-span-1 w-full h-full"></div>
             </div>
