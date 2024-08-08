@@ -68,7 +68,7 @@ class BotAzureOpenAI {
                 result.content.replace(/```json|```/g, "").trim()
             );
 
-            this.history.push(new AIMessage(result.content));
+            this.history.push(new AIMessage(JSON.stringify(jsonResponse)));
 
             return jsonResponse;
         } catch (error) {
