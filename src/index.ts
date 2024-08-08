@@ -57,12 +57,20 @@ const port = 3000;
 app.use(cors()); // Use cors middleware
 
 app.get("/messagetool/:input", async (req, res) => {
-    const input = req.params.input;
-    const response = await bot.messageTools({
-        input,
-        system: "Your are helpful bot that operates in Braunschweig city",
-    });
-    return res.json(response);
+    try{
+
+        const input = req.params.input;
+        const response = await bot.messageTools({
+            input,
+            system: "Your are helpful bot that operates in Braunschweig city",
+        });
+        
+        res.setHeader('Content-Type', 'application/json');
+        return res.status(200).json(response);
+    }catch(error){
+        console.error("Error invoking OpenAI:", error);
+        return res.status(500).json({ error: error });
+    }
 });
 
 app.listen(port, () => {
