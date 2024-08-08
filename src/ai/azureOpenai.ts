@@ -1,6 +1,6 @@
 import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
 import { AzureAIClassProps } from "../types/general";
-import { AzureChatOpenAI, AzureOpenAI } from "@langchain/openai";
+import { AzureChatOpenAI, AzureOpenAI, ChatOpenAI } from "@langchain/openai";
 
 class BotAzureOpenAI {
     history: any[] = [];
@@ -24,12 +24,7 @@ class BotAzureOpenAI {
         this.tools = tools.functions;
         this.debug = debug;
 
-        console.log("Azure OpenAI API Key:", apiKey);
-        console.log("Azure OpenAI Instance Name:", instance_name);
-        console.log("Azure OpenAI Embeddings Deployment Name:", embeddings_deployment_name);
-        console.log("Azure OpenAI API Version:", api_version);
-
-        this.model = new AzureOpenAI({
+        this.model = new ChatOpenAI({
             model,
             temperature,
             maxRetries: 2,
@@ -39,26 +34,20 @@ class BotAzureOpenAI {
             azureOpenAIApiVersion: api_version,
         });
         
+        const toolAgent = createToolCallingAgent({
+            llm: this.model,
+            tools,
+            prompt,
+        });
 
-        // const toolAgent = createToolCallingAgent({
-        //     llm: this.model,
-        //     tools,
-        //     prompt,
-        // });
-
-        // this.agent = new AgentExecutor({
-        //     agent: toolAgent,
-        //     tools,
-        // });
+        this.agent = new AgentExecutor({
+            agent: toolAgent,
+            tools,
+        });
     }
 
     async message(user: string, input: string) {
         try {
-
-            const inputText = "AzureOpenAI is an AI company that ";
-
-        const completion = await this.model.invoke(inputText);
-        return completion;
 
             if (this.debug) {
                 console.log("User:", user);
