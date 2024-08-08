@@ -17,5 +17,8 @@ RUN wget -O noise.zip https://opendata.braunschweig.de/sites/default/files/Gewer
 # Build the TypeScript code
 RUN npm start
 
+# Expose port 5555
+EXPOSE 5555
+
 # Start the application
 CMD ["npm", "start"]

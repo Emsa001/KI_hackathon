@@ -50,6 +50,7 @@ class BotAzureOpenAI {
         this.agent = new AgentExecutor({
             agent: toolAgent,
             tools,
+            returnIntermediateSteps: true,
         });
     }
 
@@ -87,6 +88,7 @@ class BotAzureOpenAI {
             }
 
             const result = await this.agent.invoke(message);
+
             this.history.push(new HumanMessage(message.input));
             this.history.push(new AIMessage(result.output));
 
