@@ -14,10 +14,11 @@ RUN npm install
 COPY . .
 
 # Build the Next.js application
+RUN wget -O ./public/noise.zip https://opendata.braunschweig.de/sites/default/files/Gewerbel%C3%A4rm%20Tag_0.zip
 RUN npm run build
 
 # Expose the port that the Next.js application will run on
-EXPOSE 80
+EXPOSE 3000
 
 # Start the Next.js application
 CMD ["npm", "start"]
