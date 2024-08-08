@@ -23,6 +23,16 @@ def fetch_bikedata():
         with open(file.split('.')[0] + '.json', 'w') as a:
             a.write(js)
 
+    with open(file.split('.')[0] + '_sums.json', 'w') as f:
+        d = ''
+        for r in rows:
+            if d != r['DATUM']:
+                if d:
+                    f.write(d + ',' + str(s) + '\n')
+                d = r['DATUM']
+                s = 0
+            s += int(r['TAGESWERT'] if r['TAGESWERT'] else 0)
+
 
 def fetch_mapdata():
     from bs4 import BeautifulSoup
@@ -53,10 +63,10 @@ def fetch_mapdata():
         pass
     return maps
 
-
-maps = fetch_mapdata()
-for map_name, map_url in maps.items():
-    print('Downloading ' + map_name)
-    with open('maps/' + map_name + '.zip', 'wb') as f:
-        m = get(map_url).content
-        f.write(m)
+fetch_bikedata()
+# maps = fetch_mapdata()
+# for map_name, map_url in maps.items():
+#     print('Downloading ' + map_name)
+#     with open('maps/' + map_name + '.zip', 'wb') as f:
+#         m = get(map_url).content
+#         f.write(m)
