@@ -94,6 +94,11 @@ function App() {
         );
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        handleClick();
+    };
+
     return (
         <div className="App" style={{ height: "100vh", width: "100vw" }}>
             <div className="grid grid-cols-2 gap-4 h-screen w-screen">
@@ -101,13 +106,21 @@ function App() {
                     <div className="w-[90%] p-5 text-wrap">
                         <AiResponseElement />
                     </div>
-                    <Textarea
-                        className="border border-1 w-[90%] h-32"
-                        maxLength={500}
-                        placeholder="Your input"
-                        onChange={(e) => setInput(e.target.value)}
-                    />
-                    <Button onClick={handleClick}>Submit</Button>
+                    <form onSubmit={handleSubmit} className="w-[90%]">
+                        <Textarea
+                            className="border border-1 w-full h-32"
+                            maxLength={500}
+                            placeholder="Your input"
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleSubmit(e);
+                                }
+                            }}
+                        />
+                        <Button type="submit">Submit</Button>
+                    </form>
                 </div>
                 <div id="map" className="col-span-1 w-full h-full"></div>
             </div>
