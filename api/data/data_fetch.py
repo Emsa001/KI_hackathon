@@ -57,6 +57,6 @@ def fetch_mapdata():
 maps = fetch_mapdata()
 for map_name, map_url in maps.items():
     print('Downloading ' + map_name)
-    with open('../public/' + map_name + '.zip', 'wb') as f:
+    with open('maps/' + map_name + '.zip', 'wb') as f:
         m = get(map_url).content
         f.write(m)
