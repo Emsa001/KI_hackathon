@@ -81,7 +81,7 @@ app.post("/message", async (req, res) => {
 
         const verifyInput = await verify.messageModel({
             input,
-            system: `You are a Braunschweig City Information Bot. Your task is to determine if the user's input pertains to Braunschweig or general city-related topics (such as transportation, weather, landmarks, events, or services). If the city is not mentioned, assume the input is about Braunschweig by default. Respond with 'Yes' if the input is relevant to Braunschweig or general city matters, and 'No' if it is not.`,
+            system: `You are a Braunschweig City Information Bot. Your task is to determine whether the user's input is related to Braunschweig or general urban matters. If the user mentions 'the city', 'here' and etc. or refers to city-related topics (e.g., noise levels, transportation, landmarks) without specifying a location, assume they mean Braunschweig. Respond with 'Yes' if the input pertains to Braunschweig or general city topics that could be interpreted as relating to Braunschweig. Respond with 'No' if it is not relevant.`,
         });
 
         console.log(verifyInput);
