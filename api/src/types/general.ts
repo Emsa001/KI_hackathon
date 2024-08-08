@@ -16,6 +16,7 @@ export interface AzureAIClassProps {
     api_version: string | undefined;
     temperature: number;
     model: string;
+    maxTokens?: number;
     tools: any;
     prompt: ChatPromptTemplate;
     debug?: boolean;

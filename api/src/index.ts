@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
-import getCityData from "./tools/CityData";
+import getCityData from "./tools/city";
 import BotOpenAI from "./ai/openai";
 import BotAzureOpenAI from "./ai/azureOpenai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
@@ -36,6 +36,19 @@ const bot = new BotAzureOpenAI({
     debug: false,
 });
 
+const verify = new BotAzureOpenAI({
+    apiKey: process.env.AZURE_OPENAI_API_KEY,
+    instance_name: process.env.AZURE_OPENAI_API_INSTANCE_NAME,
+    embeddings_deployment_name: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
+    api_version: process.env.AZURE_OPENAI_API_VERSION,
+    model: "gpt-4o",
+    temperature: 0,
+    maxTokens: 10,
+    tools: [],
+    prompt,
+    debug: false,
+});
+
 // const fileData = await loadPDF("sample.pdf");
 // const input = "What is the tilte of the document?";
 
@@ -64,6 +77,15 @@ app.get("/", (req, res) => {
 app.post("/message", async (req, res) => {
     try{
         const input = req.body.input;
+
+        const verifyInput = await verify.messageModel({
+            input,
+            system: "verify if user input is regarding the city stuff, can contain stuff like (city noise, bikes, hosuing and etc), respond only with yes or no",
+        });
+
+        console.log(verifyInput);
+        if(verifyInput.content.toLowerCase().includes("no"))
+            return res.status(200).json({ output: "I can provide information only about Braunschweig city" });
 
         const response = await bot.messageTools({
             input,

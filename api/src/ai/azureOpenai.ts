@@ -1,7 +1,6 @@
 import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
 import { AzureAIClassProps } from "../types/general";
-import { AzureChatOpenAI, AzureOpenAI, ChatOpenAI } from "@langchain/openai";
-import { JsonOutputFunctionsParser } from "langchain/output_parsers";
+import {  ChatOpenAI } from "@langchain/openai";
 
 import {
     AIMessage,
@@ -24,6 +23,7 @@ class BotAzureOpenAI {
         api_version,
         temperature,
         model,
+        maxTokens,
         tools,
         prompt,
         debug = false,
@@ -35,6 +35,7 @@ class BotAzureOpenAI {
             model,
             temperature,
             maxRetries: 2,
+            maxTokens,
             azureOpenAIApiKey: apiKey,
             azureOpenAIApiInstanceName: instance_name,
             azureOpenAIApiDeploymentName: embeddings_deployment_name,
@@ -54,7 +55,7 @@ class BotAzureOpenAI {
         });
     }
 
-    async messageModel(message: any) {
+    async messageModel(message: any, json: boolean = false) {
         try {
             const input = message.input + " File: " + message.file;
             const system = message.system;
@@ -63,6 +64,9 @@ class BotAzureOpenAI {
                 new SystemMessage(system),
                 new HumanMessage(input),
             ]);
+
+            if(!json)
+                return result;
 
             // Parse the JSON content from the result
             const jsonResponse = JSON.parse(

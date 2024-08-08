@@ -1,10 +1,10 @@
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
-import fetchData from "./fetch";
+import fetchData from "./Noise/fetch";
 
 const getCityData = new DynamicStructuredTool({
-    name: "get_data",
-    description: "Get specific data",
+    name: "get_city_data",
+    description: "Get specific data about the city",
     schema: z.object({
         data: z
             .array(z.enum(["population", "road_noise"]))
