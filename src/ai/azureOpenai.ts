@@ -1,6 +1,13 @@
 import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
 import { AzureAIClassProps } from "../types/general";
 import { AzureChatOpenAI, AzureOpenAI, ChatOpenAI } from "@langchain/openai";
+import { JsonOutputFunctionsParser } from "langchain/output_parsers";
+
+import {
+    AIMessage,
+    HumanMessage,
+    SystemMessage,
+} from "@langchain/core/messages";
 
 class BotAzureOpenAI {
     history: any[] = [];
@@ -33,7 +40,7 @@ class BotAzureOpenAI {
             azureOpenAIApiDeploymentName: embeddings_deployment_name,
             azureOpenAIApiVersion: api_version,
         });
-        
+
         const toolAgent = createToolCallingAgent({
             llm: this.model,
             tools,
@@ -46,22 +53,42 @@ class BotAzureOpenAI {
         });
     }
 
-    async message(user: string, input: string) {
+    async messageModel(message: any) {
         try {
+            const input = message.input + " File: " + message.file;
+            const system = message.system;
 
-            if (this.debug) {
-                console.log("User:", user);
-                console.log("Input:", input);
+            const result = await this.model.invoke([
+                new SystemMessage(system),
+                new HumanMessage(input),
+            ]);
+
+            // Parse the JSON content from the result
+            const jsonResponse = JSON.parse(
+                result.content.replace(/```json|```/g, "").trim()
+            );
+
+            this.history.push(new AIMessage(JSON.stringify(jsonResponse)));
+
+            return jsonResponse;
+        } catch (error) {
+            console.error("Error invoking OpenAI:", error);
+        }
+    }
+
+    async messageTools(message: any) {
+        try {
+            if (this.history.length > 0) {
+                message.chat_history = this.history;
             }
 
-            if (!input) {
-                console.error("Message is undefined or null.");
-                return;
+            if (message.file) {
+                message.input += " File: " + message.file;
             }
 
-            const result = await this.agent.invoke({
-                input: `${user}: ${input}`,
-            });
+            const result = await this.agent.invoke(message);
+            this.history.push(new HumanMessage(message.input));
+            this.history.push(new AIMessage(result.output));
 
             return result;
         } catch (error) {
