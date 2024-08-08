@@ -3,6 +3,9 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import getCityData from "./tools/CityData";
 import BotOpenAI from "./ai/openai";
 import BotAzureOpenAI from "./ai/azureOpenai";
+import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import fs from "fs/promises";
+import { loadPDF } from "./utils/PdfReader";
 
 const prompt = ChatPromptTemplate.fromMessages([
     ["system", "You are a helpful assistant"],
@@ -32,14 +35,15 @@ const bot = new BotAzureOpenAI({
     debug: false,
 });
 
-const messages = [
-    {
-        user: "Emanuel",
-        message: "Where is Wolfsburg located? And what is the population?",
-    },
-]
+const fileData = await loadPDF("sample.pdf");
 
-for (const message of messages) {
-    const response = await bot.message(message.user, message.message);
-    console.log(response);
+const message2 = {
+    // file_content: `${fileData[0].pageContent}`,
+    input: `"Where is Wolfsburg? What is that document about?"`,
 }
+
+const response = await bot.messageTools(message2);
+console.log(response);
+
+const response2 = await bot.messageTools({input: "Can you tell me more about the document?"});
+console.log(response2);

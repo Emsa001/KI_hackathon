@@ -1,6 +1,7 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
 import { AIClassProps } from "../types/general";
+import { HumanMessage } from "@langchain/core/messages";
 
 class BotOpenAI {
     history: any[] = [];
@@ -39,21 +40,20 @@ class BotOpenAI {
         });
     }
 
-    async message(user: string, input: string) {
+    async messageModel(message:HumanMessage[]) {
+        try{
+            const result = await this.model.invoke(message);
+
+            return result;
+        } catch (error) {
+            console.error("Error invoking OpenAI:", error);
+        }
+    }
+
+    async messageTools(message:string) {
         try {
-            if (this.debug) {
-                console.log("User:", user);
-                console.log("Input:", input);
-            }
 
-            if (!input) {
-                console.error("Message is undefined or null.");
-                return;
-            }
-
-            const result = await this.agent.invoke({
-                input: `${user}: ${input}`,
-            });
+            const result = await this.agent.invoke(message);
 
             return result;
         } catch (error) {

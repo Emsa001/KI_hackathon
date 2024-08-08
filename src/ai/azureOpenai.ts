@@ -1,6 +1,11 @@
 import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
 import { AzureAIClassProps } from "../types/general";
 import { AzureChatOpenAI, AzureOpenAI, ChatOpenAI } from "@langchain/openai";
+import {
+    AIMessage,
+    HumanMessage,
+    SystemMessage,
+} from "@langchain/core/messages";
 
 class BotAzureOpenAI {
     history: any[] = [];
@@ -33,7 +38,7 @@ class BotAzureOpenAI {
             azureOpenAIApiDeploymentName: embeddings_deployment_name,
             azureOpenAIApiVersion: api_version,
         });
-        
+
         const toolAgent = createToolCallingAgent({
             llm: this.model,
             tools,
@@ -46,22 +51,29 @@ class BotAzureOpenAI {
         });
     }
 
-    async message(user: string, input: string) {
+    async messageModel(message: HumanMessage[]) {
         try {
+            const result = await this.model.invoke(message);
 
-            if (this.debug) {
-                console.log("User:", user);
-                console.log("Input:", input);
+            return result;
+        } catch (error) {
+            console.error("Error invoking OpenAI:", error);
+        }
+    }
+
+    async messageTools(message: any) {
+        try {
+            if(message.file_content){
+                this.history.push(new HumanMessage("File Content: " + message.file_content));
             }
 
-            if (!input) {
-                console.error("Message is undefined or null.");
-                return;
+            if(this.history.length > 0){
+                message.chat_history = this.history;
             }
-
-            const result = await this.agent.invoke({
-                input: `${user}: ${input}`,
-            });
+            
+            const result = await this.agent.invoke(message);
+            this.history.push(new HumanMessage(message.input));
+            this.history.push(new AIMessage(result.output));
 
             return result;
         } catch (error) {
