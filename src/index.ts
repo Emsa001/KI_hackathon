@@ -8,7 +8,7 @@ import fs from "fs/promises";
 import { loadPDF } from "./utils/PdfReader";
 
 const prompt = ChatPromptTemplate.fromMessages([
-    ["system", "You are a helpful assistant"],
+    ["system", "{system}"],
     ["placeholder", "{chat_history}"],
     ["human", "{input}"],
     ["placeholder", "{agent_scratchpad}"],
@@ -36,14 +36,16 @@ const bot = new BotAzureOpenAI({
 });
 
 const fileData = await loadPDF("sample.pdf");
+const input = "What is the tilte of the document?";
 
 const message2 = {
-    // file_content: `${fileData[0].pageContent}`,
-    input: `"Where is Wolfsburg? What is that document about?"`,
-}
+    file: `${fileData[0].pageContent}`,
+    input: `Get All necessary information from the file content to answer user's question: ${input}`,
+    system: "Your task is to extract all necessary information from the file content to answer user's question. Respond in JSON format without any formatting, example: {'title':'Example Document'}.",
+};
 
-const response = await bot.messageTools(message2);
+const response = await bot.messageModel(message2);
 console.log(response);
 
-const response2 = await bot.messageTools({input: "Can you tell me more about the document?"});
+const response2 = await bot.messageTools({ input, system: "Your are helpfull bot" });
 console.log(response2);

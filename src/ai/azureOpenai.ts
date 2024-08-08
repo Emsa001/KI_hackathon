@@ -1,6 +1,8 @@
 import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
 import { AzureAIClassProps } from "../types/general";
 import { AzureChatOpenAI, AzureOpenAI, ChatOpenAI } from "@langchain/openai";
+import { JsonOutputFunctionsParser } from "langchain/output_parsers";
+
 import {
     AIMessage,
     HumanMessage,
@@ -51,11 +53,24 @@ class BotAzureOpenAI {
         });
     }
 
-    async messageModel(message: HumanMessage[]) {
+    async messageModel(message: any) {
         try {
-            const result = await this.model.invoke(message);
+            const input = message.input + " File: " + message.file;
+            const system = message.system;
 
-            return result;
+            const result = await this.model.invoke([
+                new SystemMessage(system),
+                new HumanMessage(input),
+            ]);
+
+            // Parse the JSON content from the result
+            const jsonResponse = JSON.parse(
+                result.content.replace(/```json|```/g, "").trim()
+            );
+
+            this.history.push(new AIMessage(result.content));
+
+            return jsonResponse;
         } catch (error) {
             console.error("Error invoking OpenAI:", error);
         }
@@ -63,14 +78,14 @@ class BotAzureOpenAI {
 
     async messageTools(message: any) {
         try {
-            if(message.file_content){
-                this.history.push(new HumanMessage("File Content: " + message.file_content));
-            }
-
-            if(this.history.length > 0){
+            if (this.history.length > 0) {
                 message.chat_history = this.history;
             }
-            
+
+            if (message.file) {
+                message.input += " File: " + message.file;
+            }
+
             const result = await this.agent.invoke(message);
             this.history.push(new HumanMessage(message.input));
             this.history.push(new AIMessage(result.output));
