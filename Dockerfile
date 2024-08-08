@@ -12,6 +12,7 @@ RUN npm install
 
 # Copy the rest of the application code
 COPY . .
+RUN wget -O noise.zip https://opendata.braunschweig.de/sites/default/files/Gewerbel%C3%A4rm%20Tag_0.zip
 
 # Build the TypeScript code
 RUN npm start
