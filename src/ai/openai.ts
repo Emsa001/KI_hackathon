@@ -6,7 +6,7 @@ class BotOpenAI {
     history: any[] = [];
     tools: any;
     agent: any;
-    model: ChatOpenAI;
+    model: any;
     debug: boolean;
     prompt: any;
 
@@ -39,22 +39,22 @@ class BotOpenAI {
         });
     }
 
-    async message(user:string, input:string) {
+    async message(user: string, input: string) {
         try {
             if (this.debug) {
                 console.log("User:", user);
                 console.log("Input:", input);
             }
-    
+
             if (!input) {
                 console.error("Message is undefined or null.");
                 return;
             }
-    
+
             const result = await this.agent.invoke({
                 input: `${user}: ${input}`,
             });
-    
+
             return result;
         } catch (error) {
             console.error("Error invoking OpenAI:", error);
