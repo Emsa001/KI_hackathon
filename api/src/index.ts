@@ -8,6 +8,7 @@ import { loadPDF } from "./utils/PdfReader";
 import express from "express";
 import cors from "cors"; // Import cors
 import getTransportData from "./tools/transport";
+import getNoiseData from "./tools/noise";
 
 const prompt = ChatPromptTemplate.fromMessages([
     ["system", "{system}"],
@@ -32,7 +33,7 @@ const bot = new BotAzureOpenAI({
     api_version: process.env.AZURE_OPENAI_API_VERSION,
     model: "gpt-4o",
     temperature: 0.5,
-    tools: [getCityData, getTransportData],
+    tools: [getCityData, getTransportData, getNoiseData],
     prompt,
     debug: false,
 });
@@ -68,8 +69,14 @@ const verify = new BotAzureOpenAI({
 const app = express();
 const port = 5555;
 
-app.use(cors()); // Use cors middleware
+const corsOptions = {
+    origin: 'http://localhost:3000', // Replace with your React app's URL
+    optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions)); // Use cors middleware
 app.use(express.json()); // Use express.json() middleware to parse JSON bodies
+app.use(express.static('public'));
 
 app.get("/", (req, res) => {
     res.send("Hello World");

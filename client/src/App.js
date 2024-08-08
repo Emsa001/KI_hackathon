@@ -97,6 +97,11 @@ function App() {
             const { data } = request;
             setAiText(data);
 
+            mapRef.current.eachLayer(function (layer) {
+                if(layer._url == "https://tile.openstreetmap.org/{z}/{x}/{y}.png") return;
+                mapRef.current.removeLayer(layer);
+            });
+
             if (data?.intermediateSteps && data?.intermediateSteps.length > 0) {
                 console.log(data?.intermediateSteps);
                 const map =
