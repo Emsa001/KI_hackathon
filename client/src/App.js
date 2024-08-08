@@ -5,8 +5,19 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.js";
 import shp from "shpjs";
 
+import {
+    Button,
+    CodeMockup,
+    Input,
+    Textarea,
+    WindowMockup,
+} from "react-daisyui";
+import { AIRequst } from "./api";
+
 function App() {
     const mapRef = useRef(null);
+    const [input, setInput] = useState("");
+    const [aitext, setAiText] = useState(null);
 
     useEffect(() => {
         if (mapRef.current) return; // If map is already initialized, do nothing
@@ -45,20 +56,61 @@ function App() {
             resultMarker.bindPopup(e.geocode.name).openPopup();
         });
     }, []);
-    
-    const handleClick = () => {
-        const map = "http://localhost:3000/noise.zip";
-        if(map){
-            shp(map).then(function(geojson) {
-                L.geoJSON(geojson).addTo(mapRef.current);
-            });
+
+    const handleClick = async () => {
+        try {
+            const request = await AIRequst(input);
+            const { data } = request;
+            setAiText(data);
+
+            // const map = "http://localhost:3000/noise.zip";
+            if (data?.intermediateSteps && data?.intermediateSteps.length > 0) {
+                console.log(data?.intermediateSteps);
+                const map =
+                    JSON?.parse(data?.intermediateSteps[0]?.observation)[0]
+                        ?.map || null;
+                if (map) {
+                    shp(map).then(function (geojson) {
+                        L.geoJSON(geojson).addTo(mapRef.current);
+                        console.log("here");
+                    });
+                }
+            }
+        } catch (error) {
+            console.log(error);
         }
-    }
+    };
+
+    const AiResponseElement = () => {
+        if (!aitext?.output) return null;
+
+        return (
+            <WindowMockup className="w-full h-full bg-gradient-to-br from-violet-600 from-indigo-900">
+                <div className="flex flex-col px-4 w-full">
+                    <h2 className="font-bold mb-2">{aitext?.input}</h2>
+                    <p className="text-success text-xl">{aitext?.output}</p>
+                </div>
+            </WindowMockup>
+        );
+    };
 
     return (
         <div className="App" style={{ height: "100vh", width: "100vw" }}>
-            <button onClick={handleClick}>Click me</button>
-            <div id="map" style={{ height: "90%", width: "100%" }}></div>
+            <div className="grid grid-cols-2 gap-4 h-screen w-screen">
+                <div className="flex flex-col gap-2 items-center justify-center">
+                    <div className="w-[90%] p-5 text-wrap">
+                        <AiResponseElement />
+                    </div>
+                    <Textarea
+                        className="border border-1 w-[90%] h-32"
+                        maxLength={500}
+                        placeholder="Your input"
+                        onChange={(e) => setInput(e.target.value)}
+                    />
+                    <Button onClick={handleClick}>Submit</Button>
+                </div>
+                <div id="map" className="col-span-1 w-full h-full"></div>
+            </div>
         </div>
     );
 }

@@ -55,11 +55,16 @@ const app = express();
 const port = 5555;
 
 app.use(cors()); // Use cors middleware
+app.use(express.json()); // Use express.json() middleware to parse JSON bodies
 
-app.get("/messagetool/:input", async (req, res) => {
+app.get("/", (req, res) => {
+    res.send("Hello World");
+});
+
+app.post("/message", async (req, res) => {
     try{
+        const input = req.body.input;
 
-        const input = req.params.input;
         const response = await bot.messageTools({
             input,
             system: "Your are helpful bot that operates in Braunschweig city",

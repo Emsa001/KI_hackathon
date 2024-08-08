@@ -52,7 +52,6 @@ class BotOpenAI {
 
     async messageTools(message:string) {
         try {
-
             const result = await this.agent.invoke(message);
 
             return result;

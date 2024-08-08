@@ -89,8 +89,8 @@ class BotAzureOpenAI {
 
             const result = await this.agent.invoke(message);
 
-            this.history.push(new HumanMessage(message.input));
-            this.history.push(new AIMessage(result.output));
+            // this.history.push(new HumanMessage(message.input));
+            // this.history.push(new AIMessage(result.output));
 
             return result;
         } catch (error) {

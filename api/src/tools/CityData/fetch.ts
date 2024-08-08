@@ -6,7 +6,7 @@ const getNoise = (type: string) => {
     switch (type) {
         case "road":
             return {
-                map: "https://braunschweig_road_noise.de",
+                map: "http://localhost:3000/noise.zip",
             };
         default:
             return {
