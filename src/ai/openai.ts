@@ -1,9 +1,8 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
-import runMessage from "./message";
 import { AIClassProps } from "../types/general";
 
-class AI {
+class BotOpenAI {
     history: any[] = [];
     tools: any;
     agent: any;
@@ -41,8 +40,26 @@ class AI {
     }
 
     async message(user:string, input:string) {
-        return await runMessage(user, input, this);
+        try {
+            if (this.debug) {
+                console.log("User:", user);
+                console.log("Input:", input);
+            }
+    
+            if (!input) {
+                console.error("Message is undefined or null.");
+                return;
+            }
+    
+            const result = await this.agent.invoke({
+                input: `${user}: ${input}`,
+            });
+    
+            return result;
+        } catch (error) {
+            console.error("Error invoking OpenAI:", error);
+        }
     }
 }
 
-export default AI;
+export default BotOpenAI;

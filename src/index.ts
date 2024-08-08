@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import getCityData from "./tools/CityData";
-import AI from "./ai/init";
+import BotOpenAI from "./ai/openai";
 
 const prompt = ChatPromptTemplate.fromMessages([
     ["system", "You are a helpful assistant"],
@@ -10,7 +10,7 @@ const prompt = ChatPromptTemplate.fromMessages([
     ["placeholder", "{agent_scratchpad}"],
 ]);
 
-const bot = new AI({
+const bot = new BotOpenAI({
     apiKey: process.env.OPENAI_API_KEY,
     model: "gpt-4o-mini",
     temperature: 0.5,
