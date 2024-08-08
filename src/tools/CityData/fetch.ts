@@ -1,68 +1,30 @@
-const getLocation = (city: string) => {
-    switch (city) {
-        case "Wolfsburg":
+const getPopulation = () => {
+    return 500000;
+};
+
+const getNoise = (type: string) => {
+    switch (type) {
+        case "road":
             return {
-                country: "Poland",
-                region: "Mazowsze",
-                coordinates: {
-                    lat: 2.4226,
-                    lon: 10.7865,
-                },
+                map: "https://braunschweig_road_noise.de",
             };
-            break;
-        case "Berlin":
-            return {
-                country: "Germany",
-                region: "Berlin",
-                coordinates: {
-                    lat: 52.52,
-                    lon: 13.405,
-                },
-            };
-            break;
         default:
             return {
-                country: "Unknown",
-                region: "Unknown",
-                coordinates: {
-                    lat: 0,
-                    lon: 0,
-                },
+                data: "Unknown",
             };
-            break;
     }
 };
 
-const getPopulation = (city: string) => {
-    switch (city) {
-        case "Wolfsburg":
-            return {
-                population: 123456,
-            };
-            break;
-        case "Berlin":
-            return {
-                population: 1234567,
-            };
-            break;
-        default:
-            return {
-                population: 0,
-            };
-            break;
-    }
-};
-
-const fetchData = (city: string, data: string[]) => {
+const fetchData = (data: string[]) => {
     const response = data.map((d) => {
         switch (d) {
-            case "location":
-                return getLocation(city);
             case "population":
-                return getPopulation(city);
+                return getPopulation();
+            case "road_noise":
+                return getNoise("road");
+                return;
             default:
                 return {
-                    city: city,
                     data: "Unknown",
                 };
         }
