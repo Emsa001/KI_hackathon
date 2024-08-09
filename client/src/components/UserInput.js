@@ -24,7 +24,7 @@ export default function UserInput({ handleSubmit }) {
                     }
                 }}
             />
-            <Button type="submit" wide={true} className="w-full" color="success">Submit</Button>
+            <Button type="submit" wide={true} className="w-full" color="success">Los</Button>
         </form>
     );
 }
