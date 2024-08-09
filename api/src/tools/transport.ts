@@ -8,8 +8,7 @@ const fetchData = (data: string[], days: string[]) => {
         switch (d) {
             case "bikes":
                 return {
-                    response: "The bikes data is shown on the map on the right",
-                    type: "chart",
+                    info: "The bikes data is shown on the map on the right",
                     url: `${process.env.ENDPOINT}/bikes/${days.join(",")}`,
                 };
             case "cars":
@@ -23,7 +22,7 @@ const fetchData = (data: string[], days: string[]) => {
         }
     });
 
-    return response;
+    return { charts: response, type: "chart" };
 };
 
 const getTransportData = new DynamicStructuredTool({

@@ -15,18 +15,16 @@ const getBikes = (days: string[]) => {
         })
         .map((entry: { date: string; riders: number }) => {
             const dayOfWeek = getDayOfWeek(entry.date);
-            return { ...entry, day: dayOfWeek.slice(0,3) };
+            return { ...entry, day: dayOfWeek.slice(0, 3) };
         });
 
     return {
-        chart: {
-            name: "Bikes data",
-            data: filteredData,
-            series: [{ type: "bar", xKey: "day", yKey: "riders" }],
-            theme: {
-                baseTheme: "ag-default-dark",
-            },
-        }
+        name: "Bikes data",
+        data: filteredData,
+        series: [{ type: "bar", xKey: "day", yKey: "riders" }],
+        theme: {
+            baseTheme: "ag-default-dark",
+        },
     };
 };
 

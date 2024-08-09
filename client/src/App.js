@@ -114,32 +114,38 @@ function App() {
             });
 
             if (data?.intermediateSteps && data?.intermediateSteps.length > 0) {
-                const observationString =
-                    data?.intermediateSteps[0]?.observation || "null";
-                let observationData = null;
+                data?.intermediateSteps.forEach((step) => {
+                    const observationString = step.observation || "null";
+                    let observationData = null;
 
-                try {
-                    observationData = JSON.parse(observationString);
-                } catch (error) {
-                    console.error("Failed to parse observation data:", error);
-                }
+                    try {
+                        observationData = JSON.parse(observationString);
+                    } catch (error) {
+                        console.error(
+                            "Failed to parse observation data:",
+                            error
+                        );
+                    }
 
-                setMapInfo(observationData.info);
-                switch (observationData?.type) {
-                    case "chart":
-                        const response = await getRequest(data.url);
-                        addChart(response.data.chart);
-                        break;
-                    case "map":
-                        observationData.maps.forEach(async (data) => {
-                            const map = data.url;
-                            console.log(map);
-                            shp(map).then(function (geojson) {
-                                L.geoJSON(geojson).addTo(mapRef.current);
-                                console.log("here");
+                    console.log(observationData);
+                    switch (observationData?.type) {
+                        case "chart":
+                            observationData.charts.forEach(async (dat) => {
+                                const response = await getRequest(dat.url);
+                                addChart(response.data);
                             });
-                        });
-                }
+                            break;
+                        case "map":
+                            observationData.maps.forEach(async (dat) => {
+                                const map = dat.url;
+                                console.log(map);
+                                shp(map).then(function (geojson) {
+                                    L.geoJSON(geojson).addTo(mapRef.current);
+                                    console.log("here");
+                                });
+                            });
+                    }
+                });
             }
             setLoading(false);
         } catch (error) {
