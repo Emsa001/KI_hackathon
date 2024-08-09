@@ -9,6 +9,7 @@ import { Divider, Loading, WindowMockup } from "react-daisyui";
 import { AIRequst } from "./api";
 import { drawMarkers, removeAllMarkers } from "./components/Markers";
 import UserInput from "./components/UserInput";
+import Charts from "./components/Charts";
 
 function App() {
     const mapRef = useRef(null);
@@ -16,6 +17,8 @@ function App() {
     const [markers, setMarkers] = useState([
         { lat: "52.2632", lon: "10.5307" },
     ]);
+
+    const [chartData, setChartData] = useState([]);
 
     const [loading, setLoading] = useState(false);
 
@@ -98,7 +101,11 @@ function App() {
             setAiText(data);
 
             mapRef.current.eachLayer(function (layer) {
-                if(layer._url == "https://tile.openstreetmap.org/{z}/{x}/{y}.png") return;
+                if (
+                    layer._url ==
+                    "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                )
+                    return;
                 mapRef.current.removeLayer(layer);
             });
 
@@ -121,13 +128,40 @@ function App() {
         }
     };
 
+    const addChart = () => {
+        const option = {
+            // Data: Data to be displayed in the chart
+            data: [
+                { month: 'Jan', avgTemp: 2.3, iceCreamSales: 162000 },
+                { month: 'Mar', avgTemp: 6.3, iceCreamSales: 302000 },
+                { month: 'May', avgTemp: 16.2, iceCreamSales: 800000 },
+                { month: 'Jul', avgTemp: 22.8, iceCreamSales: 1254000 },
+                { month: 'Sep', avgTemp: 14.5, iceCreamSales: 950000 },
+                { month: 'Nov', avgTemp: 8.9, iceCreamSales: 200000 },
+            ],
+            // Series: Defines which chart type and data to use
+            series: [{ type: 'bar', xKey: 'month', yKey: 'iceCreamSales' }],
+            theme:{
+                baseTheme: 'ag-default-dark'
+            }
+        }
+        setChartData([option]);
+    }
+
+    useEffect(() => {
+        setTimeout(() => {
+            addChart();
+            
+        }, 1000);
+    }, []);
+
     return (
         <div
             className="bg-gradient-to-br from-stone-900 to-gray-900"
             style={{ height: "100vh", width: "100vw" }}
         >
-            <div className="grid grid-cols-2 gap-4 h-screen w-screen">
-                <div className="flex flex-col gap-2 items-center justify-between h-screen py-12">
+            <div className="grid grid-rows-3 lg:grid-cols-2 lg:grid-rows-1 gap-4 h-full lg:h-screen w-screen">
+                <div className="row-span-2 flex flex-col gap-2 items-center justify-between lg:h-screen py-12">
                     <div className="w-[90%] p-5 text-wrap">
                         <WindowMockup className="w-full h-full bg-gradient-to-br from-violet-800 to-fuchsia-900 min-h-[100px] max-h-[500px] overflow-y-auto shadow-2xl">
                             <AiResponseElement />
@@ -135,7 +169,10 @@ function App() {
                     </div>
                     <UserInput handleSubmit={handleSubmit} />
                 </div>
-                <div id="map" className="col-span-1 w-full h-full"></div>
+                <div className="relative row-start-3 lg:col-span-1 lg:row-span-1">
+                    <div id="map" className=" w-full h-full"></div>
+                    <Charts charts={chartData} />
+                </div>
             </div>
         </div>
     );
