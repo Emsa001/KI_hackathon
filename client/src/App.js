@@ -7,7 +7,6 @@ import shp from "shpjs";
 
 import { Divider, Loading, WindowMockup } from "react-daisyui";
 import { AIRequst, getRequest } from "./api";
-import { drawMarkers, removeAllMarkers } from "./components/Markers";
 import UserInput from "./components/UserInput";
 import Charts from "./components/Charts";
 
@@ -18,8 +17,8 @@ function App() {
         { lat: "52.2632", lon: "10.5307" },
     ]);
 
+    const [mapInfo, setMapInfo] = useState("");
     const [chartData, setChartData] = useState([]);
-
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -115,25 +114,27 @@ function App() {
                 let observationData = null;
 
                 try {
-                    observationData = JSON.parse(observationString)[0];
+                    observationData = JSON.parse(observationString);
                 } catch (error) {
                     console.error("Failed to parse observation data:", error);
                 }
 
-                switch(observationData?.type){
+                setMapInfo(observationData.info);
+                switch (observationData?.type) {
                     case "chart":
-                        const response = await getRequest(observationData.url);
+                        const response = await getRequest(data.url);
                         addChart(response.data.chart);
                         break;
-
                     case "map":
-                        const map = observationData.url;
-                        shp(map).then(function (geojson) {
-                            L.geoJSON(geojson).addTo(mapRef.current);
-                            console.log("here");
+                        console.log(observationData)
+                        observationData.maps.forEach(async (data) => {
+                            const map = data.url;
+                            console.log(map)
+                            shp(map).then(function (geojson) {
+                                L.geoJSON(geojson).addTo(mapRef.current);
+                                console.log("here");
+                            });
                         });
-
-
                 }
             }
             setLoading(false);
@@ -162,6 +163,11 @@ function App() {
                     <UserInput handleSubmit={handleSubmit} />
                 </div>
                 <div className="relative row-start-3 lg:col-span-1 lg:row-span-1">
+                    {mapInfo && (
+                        <h1 className="absolute z-[5000] font-bold text-xs text-black uppercase left-20 top-2 bg-gray-600 p-2 bg-opacity-80 rounded-2xl shadow-2xl max-w-[40%]">
+                            {mapInfo}
+                        </h1>
+                    )}
                     <div id="map" className=" w-full h-full"></div>
                     <Charts charts={chartData} />
                 </div>
