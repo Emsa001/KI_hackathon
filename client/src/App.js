@@ -69,7 +69,7 @@ function App() {
         });
 
         // Add initial markers to the map using myIcon
-        markers.forEach((marker) => {
+        markers?.forEach((marker) => {
             L.marker([marker.lat, marker.lon], { icon: myIcon }).addTo(
                 mapRef.current
             );
