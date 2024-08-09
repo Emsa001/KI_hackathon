@@ -88,7 +88,12 @@ function App() {
                     <span className="text-gray-300">BBOT: </span>
                     <span
                         dangerouslySetInnerHTML={{
-                            __html: aitext?.output.replace(/\n/g, "<br />"),
+                            __html: aitext?.output
+                                .replace(
+                                    /\[([^\]]+)\]\(([^)]+)\)/g,
+                                    '<a href="$2">$1</a>'
+                                )
+                                .replace(/\n/g, "<br />"),
                         }}
                     />
                 </p>
@@ -127,7 +132,6 @@ function App() {
                         );
                     }
 
-                    console.log(observationData);
                     switch (observationData?.type) {
                         case "chart":
                             observationData.charts.forEach(async (dat) => {
@@ -137,13 +141,20 @@ function App() {
                             break;
                         case "map":
                             observationData.maps.forEach(async (dat) => {
-                                const map = dat.url;
-                                console.log(map);
-                                shp(map).then(function (geojson) {
-                                    L.geoJSON(geojson).addTo(mapRef.current);
-                                    console.log("here");
-                                });
+                                try {
+                                    const map = dat.url;
+                                    shp(map).then(function (geojson) {
+                                        L.geoJSON(geojson).addTo(
+                                            mapRef.current
+                                        );
+                                        console.log("here");
+                                    });
+                                } catch (err) {
+                                    console.error(err);
+                                }
                             });
+                            setMapInfo(observationData.info);
+                            break;
                     }
                 });
             }
