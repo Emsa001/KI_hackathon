@@ -4,9 +4,13 @@
 Requires docker.
 
 Run using
-    $ ./run.sh
+```bash
+$ ./run.sh
+```
 
 Alternatively, once data is fetched:
-    $ docker compose up
+```bash
+$ docker compose up
+```
 
 
