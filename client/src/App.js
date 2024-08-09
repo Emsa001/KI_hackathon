@@ -83,7 +83,7 @@ function App() {
             return (
                 <div className="flex flex-col px-4 w-full pb-12 text-center">
                     <h2 className="font-bold mb-2 text-2xl">
-                        Hallo! Ich bin {" "}
+                        Hallo! Ich bin{" "}
                         <span className="bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text">
                             LÖWE!
                         </span>
@@ -101,7 +101,7 @@ function App() {
                     {aitext?.input}
                 </p>
                 <Divider className="py-0 my-0" />
-                <p className="font-bold text-success">
+                <p className="text-success">
                     <span className="text-gray-300">BBOT: </span>
                     <span
                         dangerouslySetInnerHTML={{
@@ -111,7 +111,14 @@ function App() {
                                     '<a href="$2">$1</a>'
                                 )
                                 .replace(/\n/g, "<br />")
-                                .replace(/### (.+)/g, "<h3>$1</h3>"), // New replacement for ### titles
+                                .replace(
+                                    /### (.+)/g,
+                                    "<h3 className='font-bold text-xl'>$1</h3>"
+                                ) // New replacement for ### titles
+                                .replace(
+                                    /\*\*(.+?)\*\*/g,
+                                    "<strong>$1</strong>"
+                                ), // New replacement for bold text
                         }}
                     />
                 </p>
@@ -197,13 +204,20 @@ function App() {
             style={{ height: "100vh", width: "100vw" }}
         >
             <div className="grid grid-rows-3 lg:grid-cols-2 lg:grid-rows-1 gap-4 h-full lg:h-screen w-screen">
-                <div className="row-span-2 flex flex-col gap-2 items-center justify-between lg:h-screen py-12">
-                    <div className="w-[90%] p-5 text-wrap">
+                <div className="relative row-span-2 flex flex-col gap-2 items-center justify-between lg:h-screen py-12">
+                    <div className="z-[50] w-[90%] p-5 text-wrap">
                         <WindowMockup className="w-full h-full bg-gradient-to-br from-violet-800 to-fuchsia-900 min-h-[100px] max-h-[500px] overflow-y-auto shadow-2xl">
                             <AiResponseElement />
                         </WindowMockup>
                     </div>
                     <UserInput handleSubmit={handleSubmit} />
+                    <img
+                        src="/logo.jpg"
+                        className="absolute top-96 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+ rounded-full"
+                        width={200}
+                        height={200}
+                    />
                 </div>
                 <div className="relative row-start-3 lg:col-span-1 lg:row-span-1">
                     {mapInfo && (
