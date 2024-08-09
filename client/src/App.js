@@ -206,7 +206,7 @@ function App() {
             <div className="grid grid-rows-3 lg:grid-cols-2 lg:grid-rows-1 gap-4 h-full lg:h-screen w-screen">
                 <div className="relative row-span-2 flex flex-col gap-2 items-center justify-between lg:h-screen py-12">
                     <div className="z-[50] w-[90%] p-5 text-wrap">
-                        <WindowMockup className="w-full h-full bg-gradient-to-br from-violet-800 to-fuchsia-900 min-h-[100px] max-h-[500px] overflow-y-auto shadow-2xl">
+                        <WindowMockup className="w-full h-full bg-gradient-to-br from-violet-800 to-fuchsia-900 min-h-[100px] max-h-[400px] overflow-y-auto shadow-2xl">
                             <AiResponseElement />
                         </WindowMockup>
                     </div>

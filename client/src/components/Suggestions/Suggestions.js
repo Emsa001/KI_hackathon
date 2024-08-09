@@ -20,17 +20,17 @@ export default function Suggestions({ handleSubmit }) {
         {
             input: "Naturdenkmale Bäume in Braunschweig",
             text: "Naturdenkmale Bäume",
-            className: "bg-violet-400 hover:scale-105 hover:bg-violet-600",
+            className: "bg-emerald-400 hover:scale-105 hover:bg-emerald-600",
         },
         {
             input: "Schienenlärm Nacht in Braunschweig",
             text: "Schienenlärm Nacht",
-            className: "bg-violet-400 hover:scale-105 hover:bg-violet-600",
+            className: "bg-teal-400 hover:scale-105 hover:bg-teal-600",
         },
         {
             input: "Überschwemmungsgebiet der Oker in Braunschweig",
             text: "Überschwemmungsgebiet Oker",
-            className: "bg-violet-400 hover:scale-105 hover:bg-violet-600",
+            className: "bg-sky-400 hover:scale-105 hover:bg-sky-600",
         },
     ];
 
