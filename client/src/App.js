@@ -47,7 +47,7 @@ function App() {
             collapsed: false,
             position: "topright",
             text: "Address Search",
-            placeholder: "Enter street address",
+            placeholder: "Suche",
             defaultMarkGeocode: false,
         }).addTo(mapRef.current);
 
@@ -74,12 +74,12 @@ function App() {
             return (
                 <div className="flex flex-col px-4 w-full pb-12 text-center">
                     <h2 className="font-bold mb-2 text-2xl">
-                        Hey! I am{" "}
+                        Hallo! Ich bin {" "}
                         <span className="bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text">
-                            BraunschweigAI!
+                            LÖWE!
                         </span>
                         <br />
-                        Ask me something about Braunschweig!
+                        Frag mich etwas über Braunschweig
                     </h2>
                 </div>
             );

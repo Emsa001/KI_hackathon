@@ -15,7 +15,7 @@ export default function UserInput({ handleSubmit }) {
             <Textarea
                 className="border border-1 w-full h-32"
                 maxLength={500}
-                placeholder="Your input"
+                // placeholder="Your input"
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {

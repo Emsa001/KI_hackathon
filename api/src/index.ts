@@ -98,7 +98,7 @@ app.post("/message", async (req, res) => {
 
         const verifyInput = await verify.messageModel({
             input,
-            system: `You are a Braunschweig City Information Bot. Your task is to determine whether the user's input is related to Braunschweig or general urban matters. If the user mentions 'the city', 'here' and etc. or refers to city-related topics (e.g., noise levels, transportation, landmarks, bikes and etc) without specifying a location, always assume user means Braunschweig city. Respond with 'Yes' if the input pertains to Braunschweig or general city topics that could be interpreted as relating to Braunschweig. Respond with 'No' if it is not relevant.`,
+            system: `You are a Braunschweig City Information Bot. Your task is to determine whether the user's input is related to Braunschweig or general urban info. If the user mentions 'the city', 'here' and etc. or refers to city-related topics (e.g., noise levels, transportation, landmarks, bikes and etc) without specifying a location, always assume user means Braunschweig city. Respond with 'Yes' if the input pertains to Braunschweig or general city topics that could be interpreted as relating to Braunschweig. Respond with 'No' if it is not relevant.`,
         });
 
         if(verifyInput.content.toLowerCase().includes("no"))
@@ -106,7 +106,7 @@ app.post("/message", async (req, res) => {
 
         const response = await bot.messageTools({
             input,
-            system: "Your are helpful bot that operates in Braunschweig city",
+            system: "Your are helpful bot that operates in Braunschweig city. If useful or relevant, you show map data. Always say which data sources you have available and list them",
         });
 
         console.log(response);
