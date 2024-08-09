@@ -34,7 +34,7 @@ const bot = new BotAzureOpenAI({
     api_version: process.env.AZURE_OPENAI_API_VERSION,
     model: "gpt-4o",
     temperature: 0.5,
-    tools: [getCityData, getTransportData, getMapsData],
+    tools: [getTransportData, getMapsData],
     prompt,
     debug: false,
 });

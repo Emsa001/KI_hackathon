@@ -11,10 +11,6 @@ const fetchData = (data: string[], days: string[]) => {
                     info: "The bikes data is shown on the map on the right",
                     url: `${process.env.ENDPOINT}/bikes/${days.join(",")}`,
                 };
-            case "cars":
-                return getCars();
-            case "public_transport":
-                return getPublicTransport();
             default:
                 return {
                     data: "Unknown",
@@ -30,7 +26,7 @@ const getTransportData = new DynamicStructuredTool({
     description: "Get specific data regarding transportation",
     schema: z.object({
         data: z
-            .array(z.enum(["bikes", "cars", "public_transport"]))
+            .array(z.enum(["bikes"]))
             .describe("The type of data to get"),
         days: z
             .array(
