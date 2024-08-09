@@ -6,7 +6,7 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.js";
 import shp from "shpjs";
 
 import { Divider, Loading, WindowMockup } from "react-daisyui";
-import { AIRequst } from "./api";
+import { AIRequst, getRequest } from "./api";
 import { drawMarkers, removeAllMarkers } from "./components/Markers";
 import UserInput from "./components/UserInput";
 import Charts from "./components/Charts";
@@ -110,15 +110,30 @@ function App() {
             });
 
             if (data?.intermediateSteps && data?.intermediateSteps.length > 0) {
-                console.log(data?.intermediateSteps);
-                const map =
-                    JSON?.parse(data?.intermediateSteps[0]?.observation)[0]
-                        ?.map || null;
-                if (map) {
-                    shp(map).then(function (geojson) {
-                        L.geoJSON(geojson).addTo(mapRef.current);
-                        console.log("here");
-                    });
+                const observationString =
+                    data?.intermediateSteps[0]?.observation || "null";
+                let observationData = null;
+
+                try {
+                    observationData = JSON.parse(observationString)[0];
+                } catch (error) {
+                    console.error("Failed to parse observation data:", error);
+                }
+
+                switch(observationData?.type){
+                    case "chart":
+                        const response = await getRequest(observationData.url);
+                        addChart(response.data.chart);
+                        break;
+
+                    case "map":
+                        const map = observationData.url;
+                        shp(map).then(function (geojson) {
+                            L.geoJSON(geojson).addTo(mapRef.current);
+                            console.log("here");
+                        });
+
+
                 }
             }
             setLoading(false);
@@ -128,32 +143,9 @@ function App() {
         }
     };
 
-    const addChart = () => {
-        const option = {
-            // Data: Data to be displayed in the chart
-            data: [
-                { month: 'Jan', avgTemp: 2.3, iceCreamSales: 162000 },
-                { month: 'Mar', avgTemp: 6.3, iceCreamSales: 302000 },
-                { month: 'May', avgTemp: 16.2, iceCreamSales: 800000 },
-                { month: 'Jul', avgTemp: 22.8, iceCreamSales: 1254000 },
-                { month: 'Sep', avgTemp: 14.5, iceCreamSales: 950000 },
-                { month: 'Nov', avgTemp: 8.9, iceCreamSales: 200000 },
-            ],
-            // Series: Defines which chart type and data to use
-            series: [{ type: 'bar', xKey: 'month', yKey: 'iceCreamSales' }],
-            theme:{
-                baseTheme: 'ag-default-dark'
-            }
-        }
-        setChartData([option]);
-    }
-
-    useEffect(() => {
-        setTimeout(() => {
-            addChart();
-            
-        }, 1000);
-    }, []);
+    const addChart = (data) => {
+        setChartData([data]);
+    };
 
     return (
         <div

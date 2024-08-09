@@ -1,14 +1,17 @@
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
-import getBikes from "./Transport/bikes";
 import getCars from "./Transport/cars";
 import getPublicTransport from "./Transport/public_transport";
 
-const fetchData = (data: string[]) => {
+const fetchData = (data: string[], days: string[]) => {
     const response = data.map((d) => {
         switch (d) {
             case "bikes":
-                return getBikes();
+                return {
+                    response: "The bikes data is shown on the map on the right",
+                    type: "chart",
+                    url: `${process.env.ENDPOINT}/bikes/${days.join(",")}`,
+                };
             case "cars":
                 return getCars();
             case "public_transport":
@@ -30,11 +33,23 @@ const getTransportData = new DynamicStructuredTool({
         data: z
             .array(z.enum(["bikes", "cars", "public_transport"]))
             .describe("The type of data to get"),
+        days: z
+            .array(
+                z.enum([
+                    "monday",
+                    "tuesday",
+                    "wednesday",
+                    "thursday",
+                    "friday",
+                    "saturday",
+                    "sunday",
+                    "none",
+                ])
+            )
+            .describe("Days user is reffering to"),
     }),
-    func: async ({ data }) => {
-        console.log("data:", data);
-
-        const userData = await fetchData(data);
+    func: async ({ data, days }) => {
+        const userData = await fetchData(data, days);
         return JSON.stringify(userData, null, 2);
     },
 });

@@ -6,11 +6,15 @@ const fetchData = (data: string[]) => {
         switch (d) {
             case "road":
                 return {
-                    map: "http://localhost:5555/Larmkartierung_Strabe_24_Stunden_Tag_(2015_2022).zip",
+                    type: "map",
+                    info: "The road data is shown on the map.",
+                    url: `${process.env.ENDPOINT}/Larmkartierung_Strabe_24_Stunden_Tag_(2015_2022).zip`,
                 };
             case "flight":
                 return {
-                    map: "http://localhost:5555/Larmkartierung_Fluglarm_Nacht_(2022).zip",
+                    type: "map",
+                    info: "The road data is shown on the map.",
+                    url: `${process.env.ENDPOINT}/Larmkartierung_Fluglarm_Nacht_(2022).zip`,
                 };
             case "industry":
                 return {
@@ -22,7 +26,9 @@ const fetchData = (data: string[]) => {
                 };
             default:
                 return {
-                    data: "Unknown",
+                    info: "No data",
+                    type: "map",
+                    url: false,
                 };
         }
     });
@@ -41,8 +47,8 @@ const getNoiseData = new DynamicStructuredTool({
     func: async ({ data }) => {
         console.log("data:", data);
 
-        const userData = await fetchData(data);
-        return JSON.stringify(userData, null, 2);
+        const noiseData = await fetchData(data);
+        return JSON.stringify(noiseData, null, 2);
     },
 });
 
