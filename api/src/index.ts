@@ -9,6 +9,7 @@ import express from "express";
 import cors from "cors"; // Import cors
 import getTransportData from "./tools/transport";
 import getNoiseData from "./tools/noise";
+import getBikes from "./tools/Transport/bikes";
 
 const prompt = ChatPromptTemplate.fromMessages([
     ["system", "{system}"],
@@ -44,8 +45,8 @@ const verify = new BotAzureOpenAI({
     embeddings_deployment_name: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
     api_version: process.env.AZURE_OPENAI_API_VERSION,
     model: "gpt-4o",
-    temperature: 0,
-    maxTokens: 10,
+    temperature: 0.5,
+    maxTokens: 50,
     tools: [],
     prompt,
     debug: false,
@@ -66,6 +67,8 @@ const verify = new BotAzureOpenAI({
 // const response2 = await bot.messageTools({ input, system: "Your are helpfull bot" });
 // console.log(response2);
 
+// console.log(getBikes(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]).chart.data);
+
 const app = express();
 const port = 5555;
 
@@ -82,13 +85,20 @@ app.get("/", (req, res) => {
     res.send("Hello World");
 });
 
+app.get("/bikes/:days", async (req, res) => {
+    const days = req.params.days.split(",");
+    const response = await getBikes(days);
+    
+    return res.status(200).json(response);
+});
+
 app.post("/message", async (req, res) => {
     try{
         const input = req.body.input;
 
         const verifyInput = await verify.messageModel({
             input,
-            system: `You are a Braunschweig City Information Bot. Your task is to determine whether the user's input is related to Braunschweig or general urban matters. If the user mentions 'the city', 'here' and etc. or refers to city-related topics (e.g., noise levels, transportation, landmarks) without specifying a location, assume they mean Braunschweig. Respond with 'Yes' if the input pertains to Braunschweig or general city topics that could be interpreted as relating to Braunschweig. Respond with 'No' if it is not relevant.`,
+            system: `You are a Braunschweig City Information Bot. Your task is to determine whether the user's input is related to Braunschweig or general urban matters. If the user mentions 'the city', 'here' and etc. or refers to city-related topics (e.g., noise levels, transportation, landmarks, bikes and etc) without specifying a location, always assume user means Braunschweig city. Respond with 'Yes' if the input pertains to Braunschweig or general city topics that could be interpreted as relating to Braunschweig. Respond with 'No' if it is not relevant.`,
         });
 
         console.log(verifyInput);

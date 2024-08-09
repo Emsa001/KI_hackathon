@@ -1,10 +1,10 @@
 import axios from "axios";
-const API = "http://localhost:5555/message/";
+const API = "http://localhost:5555";
 
 async function AIRequst(input) {
     try {
         console.log(input);
-        const response = await axios.post(API, {
+        const response = await axios.post(`${API}/message`, {
             input,
         });
         return response;
@@ -15,4 +15,13 @@ async function AIRequst(input) {
     }
 }
 
-export { AIRequst };
+async function getRequest(url){
+    try{
+        const response = await axios.get(`${url}`);
+        return response;
+    }catch(error){
+        return error.response;
+    }
+}
+
+export { AIRequst, getRequest };
