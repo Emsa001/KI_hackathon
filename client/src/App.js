@@ -97,12 +97,12 @@ function App() {
         return (
             <div className="flex flex-col px-4 w-full pb-12">
                 <p className="font-bold mb-2">
-                    <span className="text-gray-300">User: </span>
+                    <span className="text-gray-300">NUTZER: </span>
                     {aitext?.input}
                 </p>
                 <Divider className="py-0 my-0" />
                 <p className="text-success">
-                    <span className="text-gray-300">BBOT: </span>
+                    <span className="text-gray-300">LÖWE: </span>
                     <span
                         dangerouslySetInnerHTML={{
                             __html: aitext?.output
