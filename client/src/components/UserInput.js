@@ -6,7 +6,7 @@ export default function UserInput({ handleSubmit }) {
     const [input, setInput] = useState("");
 
     return (
-        <div className="w-[90%]">
+        <div className="w-[90%] z-[50]">
             <Suggestions handleSubmit={handleSubmit} />
 
             <form
