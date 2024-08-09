@@ -110,7 +110,8 @@ function App() {
                                     /\[([^\]]+)\]\(([^)]+)\)/g,
                                     '<a href="$2">$1</a>'
                                 )
-                                .replace(/\n/g, "<br />"),
+                                .replace(/\n/g, "<br />")
+                                .replace(/### (.+)/g, "<h3>$1</h3>"), // New replacement for ### titles
                         }}
                     />
                 </p>
@@ -132,8 +133,9 @@ function App() {
                 )
                     return;
                 mapRef.current.removeLayer(layer);
-                setMapInfo("");
             });
+            setMapInfo("");
+            setChartData([]);
 
             if (data?.intermediateSteps && data?.intermediateSteps.length > 0) {
                 data?.intermediateSteps.forEach((step) => {
@@ -153,7 +155,7 @@ function App() {
                         case "chart":
                             observationData.charts.forEach(async (dat) => {
                                 const response = await getRequest(dat.url);
-                                addChart(response.data);
+                                setChartData([response.data]);
                             });
                             break;
                         case "map":
@@ -187,10 +189,6 @@ function App() {
             console.log(error);
             setLoading(false);
         }
-    };
-
-    const addChart = (data) => {
-        setChartData([data]);
     };
 
     return (
