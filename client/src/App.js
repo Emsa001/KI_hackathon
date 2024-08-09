@@ -9,13 +9,12 @@ import { Divider, Loading, WindowMockup } from "react-daisyui";
 import { AIRequst, getRequest } from "./api";
 import UserInput from "./components/UserInput";
 import Charts from "./components/Charts";
+import Suggestions from "./components/Suggestions/Suggestions";
 
 function App() {
     const mapRef = useRef(null);
     const [aitext, setAiText] = useState({});
-    const [markers, setMarkers] = useState([
-        { lat: "52.2632", lon: "10.5307" },
-    ]);
+    const [markers, setMarkers] = useState();
 
     const [mapInfo, setMapInfo] = useState("");
     const [chartData, setChartData] = useState([]);
@@ -60,10 +59,20 @@ function App() {
             // Center map on result
             mapRef.current.setView(coords, 16);
             // Popup for location
-            // TODO: use custom icon
-            const resultMarker = L.marker(coords, { icon: myIcon }).addTo(mapRef.current);
-            // Add popup to marker with result text
-            resultMarker.bindPopup(e.geocode.name).openPopup();
+            const resultMarker = L.marker(coords, { icon: myIcon }).addTo(
+                mapRef.current
+            );
+            // Add popup to marker with result text and offset
+            resultMarker
+                .bindPopup(e.geocode.name, { offset: [0, -20] })
+                .openPopup();
+        });
+
+        // Add initial markers to the map using myIcon
+        markers.forEach((marker) => {
+            L.marker([marker.lat, marker.lon], { icon: myIcon }).addTo(
+                mapRef.current
+            );
         });
     }, []);
 
@@ -152,9 +161,16 @@ function App() {
                                 try {
                                     const map = dat.url;
                                     shp(map).then(function (geojson) {
-                                        L.geoJSON(geojson).addTo(
-                                            mapRef.current
-                                        );
+                                        L.geoJSON(geojson, {
+                                            pointToLayer: function (
+                                                feature,
+                                                latlng
+                                            ) {
+                                                return L.marker(latlng, {
+                                                    icon: myIcon,
+                                                });
+                                            },
+                                        }).addTo(mapRef.current);
                                         console.log("here");
                                     });
                                 } catch (err) {
@@ -189,6 +205,7 @@ function App() {
                             <AiResponseElement />
                         </WindowMockup>
                     </div>
+                    <Suggestions handleSubmit={handleSubmit} />
                     <UserInput handleSubmit={handleSubmit} />
                 </div>
                 <div className="relative row-start-3 lg:col-span-1 lg:row-span-1">
