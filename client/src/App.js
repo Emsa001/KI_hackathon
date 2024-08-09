@@ -86,7 +86,11 @@ function App() {
                 <Divider className="py-0 my-0" />
                 <p className="font-bold text-success">
                     <span className="text-gray-300">BBOT: </span>
-                    {aitext?.output}
+                    <span
+                        dangerouslySetInnerHTML={{
+                            __html: aitext?.output.replace(/\n/g, "<br />"),
+                        }}
+                    />
                 </p>
             </div>
         );
@@ -106,6 +110,7 @@ function App() {
                 )
                     return;
                 mapRef.current.removeLayer(layer);
+                setMapInfo("");
             });
 
             if (data?.intermediateSteps && data?.intermediateSteps.length > 0) {
@@ -126,10 +131,9 @@ function App() {
                         addChart(response.data.chart);
                         break;
                     case "map":
-                        console.log(observationData)
                         observationData.maps.forEach(async (data) => {
                             const map = data.url;
-                            console.log(map)
+                            console.log(map);
                             shp(map).then(function (geojson) {
                                 L.geoJSON(geojson).addTo(mapRef.current);
                                 console.log("here");
