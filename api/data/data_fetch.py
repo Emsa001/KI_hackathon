@@ -61,12 +61,19 @@ def fetch_mapdata():
     try:
         for page in range(0, 4):
             shape_listing = f'https://opendata.braunschweig.de/search/field_resources%253Afield_format/shape-927?q=search/field_resources%253Afield_format/shape-927&sort_by=changed&page=0%2C{page}'
-            t = get(shape_listing).text
+            try:
+                t = get(shape_listing).text
+            except:
+                print(shape_listing + ' failed')
+                continue
             BeautifulSoup(t, 'html.parser')
             dom = etree.HTML(t)
             for i in range(1, 11):
                 xpath_link = f'/html/body/div[2]/div/div/section/div/div/div/div/div[2]/div/div/div/div/div[3]/div[{i}]/article/div[2]/h2/a'
-                l = url_base + dom.xpath(xpath_link)[0].get('href')
+                try:
+                    l = url_base + dom.xpath(xpath_link)[0].get('href')
+                except:
+                    break
                 title = dom.xpath(xpath_link)[0].text
                 if title in ['OpenGeoData.NI ']:
                     continue
