@@ -2,13 +2,12 @@ import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import fs from "fs";
 
-const fetchData = (data: string[]) => {
-    const response = data.map((d) => {
+const fetchData = (data: string[], info: string) => {
+    const maps: any = data.map((d) => {
+        console.log(`${process.env.ENDPOINT}/maps/` + d);
         return {
-            type: "map",
-            info: d.replace('.zip', '').replace('_', ' '),
-            url: "http://localhost:5555/" + d
-        }
+            url: `${process.env.ENDPOINT}/maps/` + d,
+        };
         // switch (d) {
         //     case "road":
         //         return {
@@ -39,23 +38,24 @@ const fetchData = (data: string[]) => {
         // }
     });
 
-    return response;
+    return { maps, info, type: "map" };
 };
 
-const getNoiseData = new DynamicStructuredTool({
-    name: "get_noise_data",
-    description: "Get specific data about the noise in the city",
+const getMapsData = new DynamicStructuredTool({
+    name: "get_maps_data",
+    description: "Get specific map data from the city",
     schema: z.object({
+        info: z.string().describe("The title of the map"),
         data: z
-            .array(z.enum(fs.readdirSync('public')))
+            .array(z.enum(["", ...fs.readdirSync("public/maps")]))
             .describe("The type of data to get"),
     }),
-    func: async ({ data }) => {
+    func: async ({ data, info }) => {
         console.log("data:", data);
 
-        const noiseData = await fetchData(data);
+        const noiseData = await fetchData(data, info);
         return JSON.stringify(noiseData, null, 2);
     },
 });
 
-export default getNoiseData;
+export default getMapsData;

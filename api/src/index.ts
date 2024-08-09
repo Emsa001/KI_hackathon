@@ -8,7 +8,7 @@ import { loadPDF } from "./utils/PdfReader";
 import express from "express";
 import cors from "cors"; // Import cors
 import getTransportData from "./tools/transport";
-import getNoiseData from "./tools/noise";
+import getMapsData from "./tools/maps";
 import getBikes from "./tools/Transport/bikes";
 
 const prompt = ChatPromptTemplate.fromMessages([
@@ -34,7 +34,7 @@ const bot = new BotAzureOpenAI({
     api_version: process.env.AZURE_OPENAI_API_VERSION,
     model: "gpt-4o",
     temperature: 0.5,
-    tools: [getCityData, getTransportData, getNoiseData],
+    tools: [getCityData, getTransportData, getMapsData],
     prompt,
     debug: false,
 });
