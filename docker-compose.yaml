@@ -3,6 +3,8 @@ services:
     build: api/
     ports:
       - "5555:5555"
+    # volumes:
+    #   - "./api:/app"
   client:
     build: client/
     ports:

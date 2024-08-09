@@ -9,8 +9,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# Run the application:
-
 WORKDIR /mnt
 #RUN apk add python3 py3-virtualenv && virtualenv -p python3 venv
 #RUN venv/bin/pip install lxml requests beautifulsoup4

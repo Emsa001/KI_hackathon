@@ -12,6 +12,14 @@ const fetchData = (data: string[]) => {
                 return {
                     map: "http://localhost:5555/Larmkartierung_Fluglarm_Nacht_(2022).zip",
                 };
+            case "industry":
+                return {
+                    map: "http://localhost:5555/noise_industry_24.zip"
+                };
+            case "industry night":
+                return {
+                    map: "http://localhost:5555/noise_industry_night.zip"
+                };
             default:
                 return {
                     data: "Unknown",
@@ -27,7 +35,7 @@ const getNoiseData = new DynamicStructuredTool({
     description: "Get specific data about the noise in the city",
     schema: z.object({
         data: z
-            .array(z.enum(["road", "flight"]))
+            .array(z.enum(["road", "flight", "industry", "industry night"]))
             .describe("The type of data to get"),
     }),
     func: async ({ data }) => {

@@ -1,5 +1,7 @@
 import csv
 import json
+import os
+import os.path
 from pprint import pformat, pprint
 
 from requests import get
@@ -19,7 +21,7 @@ def fetch_bikedata():
 
         pprint(json.dumps(rows))
 
-        js = pformat(rows)
+        js = pformat(json.dumps(rows))
         with open(file.split('.')[0] + '.json', 'w') as a:
             a.write(js)
 
@@ -32,6 +34,22 @@ def fetch_bikedata():
                 d = r['DATUM']
                 s = 0
             s += int(r['TAGESWERT'] if r['TAGESWERT'] else 0)
+
+
+def rename_file(fn):
+    fn = fn.lower()
+    tr = {
+        ' ': '_',
+        '|': '-',
+        'ä': 'ae',
+        'ö': 'oe',
+        'ü': 'ue',
+        'ß': 'ss',
+    }
+    for special, repl in tr.items():
+        fn = fn.replace(special, repl)
+    return fn
+
 
 
 def fetch_mapdata():
@@ -63,10 +81,14 @@ def fetch_mapdata():
         pass
     return maps
 
-fetch_bikedata()
-# maps = fetch_mapdata()
-# for map_name, map_url in maps.items():
-#     print('Downloading ' + map_name)
-#     with open('maps/' + map_name + '.zip', 'wb') as f:
-#         m = get(map_url).content
-#         f.write(m)
+# fetch_bikedata()
+maps = fetch_mapdata()
+for map_name, map_url in maps.items():
+    print('Downloading ' + map_name)
+    try:
+        os.mkdir('maps')
+    except FileExistsError:
+        pass
+    with open('maps/' + rename_file(map_name) + '.zip', 'wb') as f:
+        m = get(map_url).content
+        f.write(m)
