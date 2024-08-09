@@ -42,7 +42,6 @@ const getTransportData = new DynamicStructuredTool({
                     "friday",
                     "saturday",
                     "sunday",
-                    "none",
                 ])
             )
             .describe("Days user is reffering to"),
