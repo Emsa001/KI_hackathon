@@ -21,6 +21,14 @@ function App() {
     const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const myIcon = L.icon({
+        iconUrl: "/icon.png",
+        iconSize: [22, 32],
+        shadowSize: [30, 65],
+        iconAnchor: [12, 41],
+        shadowAnchor: [7, 65],
+    });
+
     useEffect(() => {
         if (mapRef.current) return; // If map is already initialized, do nothing
 
@@ -53,7 +61,7 @@ function App() {
             mapRef.current.setView(coords, 16);
             // Popup for location
             // TODO: use custom icon
-            const resultMarker = L.marker(coords).addTo(mapRef.current);
+            const resultMarker = L.marker(coords, { icon: myIcon }).addTo(mapRef.current);
             // Add popup to marker with result text
             resultMarker.bindPopup(e.geocode.name).openPopup();
         });

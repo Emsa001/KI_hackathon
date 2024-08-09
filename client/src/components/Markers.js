@@ -1,5 +1,4 @@
 import L from "leaflet";
-
 const myIcon = L.icon({
     iconUrl: "/icon.png",
     iconSize: [22, 32],
