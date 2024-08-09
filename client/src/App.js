@@ -205,7 +205,6 @@ function App() {
                             <AiResponseElement />
                         </WindowMockup>
                     </div>
-                    <Suggestions handleSubmit={handleSubmit} />
                     <UserInput handleSubmit={handleSubmit} />
                 </div>
                 <div className="relative row-start-3 lg:col-span-1 lg:row-span-1">
