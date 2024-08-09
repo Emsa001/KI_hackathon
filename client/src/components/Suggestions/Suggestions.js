@@ -3,13 +3,13 @@ import { Button } from "react-daisyui";
 export default function Suggestions({ handleSubmit }) {
     const inputs = [
         {
-            input: "Radverkehrszählung in Braunschweig",
+            input: "Radfahrer Anzahl in Braunschweig",
             text: "Radverkehrszählung",
             className: "bg-blue-400 hover:scale-105 hover:bg-blue-600",
         },
         {
-            input: "Elektro-Roller Parkverbotszonen in Braunschweig",
-            text: "Elektro-Roller Parkverbotszonen",
+            input: "E-Roller Parkverbotszonen in Braunschweig",
+            text: "E-Scooter Parkverbotszonen",
             className: "bg-green-600 hover:scale-105 hover:bg-green-800",
         },
         {
@@ -18,8 +18,18 @@ export default function Suggestions({ handleSubmit }) {
             className: "bg-yellow-600 hover:scale-105 hover:bg-yellow-800",
         },
         {
-            input: "historische Bäume in Braunschweig",
-            text: "historische Bäume",
+            input: "Naturdenkmale Bäume in Braunschweig",
+            text: "Naturdenkmale Bäume",
+            className: "bg-violet-400 hover:scale-105 hover:bg-violet-600",
+        },
+        {
+            input: "Schienenlärm Nacht in Braunschweig",
+            text: "Schienenlärm Nacht",
+            className: "bg-violet-400 hover:scale-105 hover:bg-violet-600",
+        },
+        {
+            input: "Überschwemmungsgebiet der Oker in Braunschweig",
+            text: "Überschwemmungsgebiet Oker",
             className: "bg-violet-400 hover:scale-105 hover:bg-violet-600",
         },
     ];
